@@ -8,8 +8,8 @@
 
 @media only screen and (min-width: 1025px) and (max-width: 1280px) {
 	.homer {
-		height: 50%;
-		width: 50%;
+		height: 300px;
+		width: 300px;
 		background: url(homer.jpg) 0px 0px;
 	}
 }

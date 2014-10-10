@@ -14,6 +14,7 @@
 <div id="lyrics"></div>
 
 <script>
+	var title = document.getElementById("title");
 	var text = document.getElementById("lyrics");
 	var v = document.getElementById("music_video");
 
@@ -24,7 +25,7 @@
 	"<p>Cheer up, Sleepy Jean. <br>Oh, what can it mean. <br>To a daydream believer <br>And a homecoming queen. <br>Cheer up, Sleepy Jean. <br>Oh, what can it mean. <br>To a daydream believer <br>And a homecoming queen.</p>",
 	"<p>[Instrumental interlude]</p>",
 	"<p>Cheer up, Sleepy Jean. <br>Oh, what can it mean. <br>To a daydream believer <br>And a homecoming queen. <br>[Repeat and fade]</p>"
-	]
+	];
 
 	v.addEventListener("timeupdate", function() {
 		if (Math.floor(v.currentTime) >= 5 && Math.floor(v.currentTime) <= 36) {

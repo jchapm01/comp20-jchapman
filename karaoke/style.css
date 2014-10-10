@@ -3,6 +3,10 @@
 	text-align: center;
 }
 
+#title:hover {
+	color: orange;
+}
+
 body {
 	background-color: #FFE4E1;
 }

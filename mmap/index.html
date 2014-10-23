@@ -10,29 +10,30 @@
 
 			myOptions = {
 				center: latlng,
-				zoom: 18
+				zoom: 17
 			};
 			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 		}
 
 		// Try HTML5 geolocation
-	  if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var pos = new google.maps.LatLng(position.coords.latitude,
-                                       position.coords.longitude);
+		if(navigator.geolocation) {
+    		navigator.geolocation.getCurrentPosition(getGeoLoc);
+  		} else {
+    		// Browser doesn't support Geolocation
+    		alert("Geolocation is not supported by your web browser.  What a shame!");
+  		}
 
-      var infowindow = new google.maps.InfoWindow({
-        map: map,
-        position: pos,
-        content: 'Location found using HTML5.'
-      });
+  		function getGeoLoc(position) {
+  			var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
-      map.setCenter(pos);
-    });
-  } else {
-    // Browser doesn't support Geolocation
-    alert("Geolocation is not supported by your web browser.  What a shame!");
-  }
+      		var infowindow = new google.maps.InfoWindow({
+       			 map: map,
+        			position: pos,
+        			content: 'Location found using HTML5.'
+     		 });
+
+     		 map.setCenter(pos);
+  		}
 
 function handleNoGeolocation(errorFlag) {
   if (errorFlag) {

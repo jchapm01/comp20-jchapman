@@ -5,8 +5,10 @@
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
 	<script type="text/javascript">
 		var map;
+		var latlng;
+		
 		function initialize() {
-			var latlng = new google.maps.LatLng(42.4069, -71.1198);
+			latlng = new google.maps.LatLng(42.4069, -71.1198);
 
 			myOptions = {
 				center: latlng,
@@ -27,7 +29,7 @@
   			var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
       		var infowindow = new google.maps.InfoWindow({
-       			 map: map,
+      	 			map: map,
         			position: pos,
         			content: 'Location found using HTML5.'
      		 });

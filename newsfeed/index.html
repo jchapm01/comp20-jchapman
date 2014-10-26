@@ -8,9 +8,11 @@
 	<script>
 		$(document).ready(function(){
 	  			localStorage.setItem('phrase', 'Bonkers');
-				elem = $("header");
-				elem.innerHTML = "<h1>The phrase that pays is " + localStorage['phrase'] + "</h1>";
+	  			$("header").html("<h1>The phrase that pays is " + localStorage['phrase'] + "</h1>");
+				//elem = $("header");
+				//elem.innerHTML = "<h1>The phrase that pays is " + localStorage['phrase'] + "</h1>";
 	 	});
+	 	$("msg")
 	</script>
 </head>
 

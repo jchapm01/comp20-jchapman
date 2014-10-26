@@ -6,11 +6,13 @@
 	<title>My News Feed</title>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script>
-	  function init() {
-	  	localStorage.setItem('phrase', 'Bonkers');
-		elem = document.getElementById("header");
-		elem.innerHTML = "<h1>The phrase that pays is " + localStorage['phrase'] + "</h1>";
+		$(document).ready(function(){
+			function init() {
+	  		localStorage.setItem('phrase', 'Bonkers');
+			elem = document.getElementById("header");
+			elem.innerHTML = "<h1>The phrase that pays is " + localStorage['phrase'] + "</h1>";
 	  }
+	 	});
 	</script>
 </head>
 

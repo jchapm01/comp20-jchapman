@@ -7,30 +7,34 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script>
 		$(document).ready(function(){
-			$().init(function(){
-				localStorage.setItem('phrase', 'Bonkers');
-	  			$("header").innerHTML("<h1>The phrase that pays is " + localStorage['phrase'] + "</h1>");
+			//$.init(function(){
+				//localStorage.setItem('phrase', 'Bonkers');
+	  			//$("news").innerHTML("<h1>The phrase that pays is " + localStorage['phrase'] + "</h1>");
 				//elem = $("header");
 				//elem.innerHTML = "<h1>The phrase that pays is " + localStorage['phrase'] + "</h1>";
-			})
+			//});
 
-			$(document).store(function() {
-				localStorage[new Date().getTime()] = $("msg");
-				reload();
-			});
+			//$.store(function() {
+			//	localStorage[new Date().getTime()] = $("msg");
+			//	reload();
+			//});
 
-			$(document).reload(function() {
-				output = "";
-				for (key in localStorage) {
-					output = output + "<p>" + localStorage[key] + "</p>\n";
-				}
-				$("results").innerHTML = output;
+			//$.reload(function() {
+			//	output = "";
+			//	for (key in localStorage) {
+			//		output = output + "<p>" + localStorage[key] + "</p>\n";
+			//	}
+			//	$("news").innerHTML = output;
+			//});
+
+			$.store(function(){
+				alert("Value: " + $("#msg").val());
 			});
 	 	});
 	</script>
 </head>
 
-<body onload="init()">
+<body>
 	<h1>My News Feed</h1>
 	<h3>My news update: <input type="text" id="msg" name="msg" size="30" onchange="store()" /></h3>
 	<div id="news">News...</div>

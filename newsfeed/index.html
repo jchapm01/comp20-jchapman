@@ -14,7 +14,7 @@
 			function reload() {
 				output = "";
 				for (key in localStorage) {
-					output = output + "<p>" + key + " - " + localStorage[key] + "</p>\n";
+					output = "<p>" + key + " - " + localStorage[key] + output + "</p>\n";
 				}
 				$("#news").html(output);
 			}

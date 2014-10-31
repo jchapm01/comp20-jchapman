@@ -7,16 +7,19 @@
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
 		<script type="text/javascript">
 			var map;
-			var lat;
-			var lng;
+			var lat = 0;
+			var lng = 0;
+			var coords;
 
 			function initialize() {
-				latlng = new google.maps.LatLng(42.4069, -71.1198);
+				coords = new google.maps.LatLng(lat, lng);
 
 				myOptions = {
-					center: latlng,
+					center: coords,
 					zoom: 17
 				};
+
+				//create the map and put myself on the map:
 				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 			}
 

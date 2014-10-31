@@ -8,10 +8,10 @@
 	<script>
 			function store() {
 				localStorage[new Date().getTime()] = $("#msg").val();
-				reload();
+				load();
 			}
 
-			function reload() {
+			function load() {
 				output = "";
 				for (key in localStorage) {
 					output = "<p>" + key + " - " + localStorage[key] + output + "</p>\n";
@@ -21,7 +21,7 @@
 	</script>
 </head>
 
-<body onload="reload()">
+<body onload="load()">
 	<h1>My News Feed</h1>
 	<h3>My news update: <input type="text" id="msg" name="msg" size="30" onchange="store()"/></h3>
 	<div id="news">News...</div>

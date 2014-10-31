@@ -21,31 +21,41 @@
 
 				//create the map and put myself on the map:
 				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+				getLocation();
 			}
 
-			if(navigator.geolocation) {
-	    		navigator.geolocation.getCurrentPosition(getGeoLoc);
-		
-				// Create a marker
+			// Uses geolocaiton to get coordinates and place your current position on the map
+			function getLocation(){
+				if(navigator.geolocation) {
+		    		navigator.geolocation.getCurrentPosition(function(position){
+		    			coords = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+			     		createMap();
+		    		});
+					// Create a marker
+					//marker = new google.maps.Marker({
+					//	position: coords,
+					//	title: "Here I Am!"
+					//});
+
+					//marker.setMap(map);
+
+	  			} else {
+	    			alert("Geolocation is not supported by your web browser.  What a shame!");
+	  			}
+
+			}
+
+	  		// Renders the map with your current position, found from geolocation
+	  		function createMap() {
+	  			map.panTo(coords)
+	  			//Create a marker
 				marker = new google.maps.Marker({
-					position: latlng,
-					title: "Here I Am!"
+					position: coords,
+					title: "Here I Am!",
+					icon: "waldo.png"
 				});
+
 				marker.setMap(map);
-	  		} else {
-	    		alert("Geolocation is not supported by your web browser.  What a shame!");
-	  		}
-
-	  		function getGeoLoc(position) {
-	  			var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-	      		var infowindow = new google.maps.InfoWindow({
-	      	 			map: map,
-	        			position: pos,
-	        			content: 'Location found using HTML5.'
-	     		 });
-
-	     		map.setCenter(pos);
 	  		}
 
 			google.maps.event.addDomListener(window, 'load', initialize); //loads the map after page loads

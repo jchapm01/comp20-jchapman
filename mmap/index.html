@@ -76,6 +76,37 @@
 					}
 				}
 
+			function updateMarkers(data){
+				CharacterDictionary = {};
+
+				for (key in data) {
+					allPeople = data[key];
+
+					for (j in allPeople) {
+						player = allPeople[j];
+
+						if (key == "characters") {
+							var name = player["name"];
+							var playerLat  = player["loc"]["latitude"];
+							var playerLng  = player["loc"]["longitude"];
+							var note = player["loc"]["note"];
+							setCharMarker(name, playerLat, playerLng, note);
+							CharacterDictionary[name] = player["loc"];
+						}
+						else {
+							var login = player["login"];
+							var playerLat   = player["lat"];
+							var playerLng   = player["lng"];
+							var time  = player["created_at"];
+							var id    = player["_id"];
+							setStudMarker(login, playerLat, playerLng, time, id);
+						}
+					}
+				}
+				renderDistances();
+			}
+			}
+
 		</script>
 	</head>
 	<body onload="initialize()">

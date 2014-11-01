@@ -34,7 +34,7 @@
 		    			lat = position.coords.latitude;
 		    			lng = position.coords.longitude;
 		    			coords = new google.maps.LatLng(lat, lng);
-			     		createMap();
+			     		adjustMap();
 		    		});
 
 	  			} else {
@@ -44,9 +44,10 @@
 			}
 
 	  		// Renders the map with your current position, found from geolocation
-	  		function createMap() {
+	  		function adjustMap() {
 	  			//map.setCenter(coords);
-	  			map.panTo(coords);
+	  			console.log(coords);
+	  			map.setCenter(coords);
 	  			//Create a marker
 				myMark = new google.maps.Marker({
 					position: coords,

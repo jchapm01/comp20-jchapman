@@ -137,30 +137,32 @@
 				return t7;
 			}
 
-			function setCharMarker(name, lat, lng, note) {
-				var loc = new google.maps.LatLng(lat, lng);
-				var characterLine = new google.maps.Polyline({
-					path: [me, loc],
-					strokeColor: "000000",
-					strokeWeight: 8
-				});
-				characterLine.setMap(map);
+			function setCharMarker(name, charLat, charLng, note) {
+				var loc = new google.maps.LatLng(charLat, charLng);
 
-				var marker = new google.maps.Marker({
+				var charPolyLine = new google.maps.Polyline({
+					path: [coords, loc],
+					strokeColor: "000000",
+					strokeWeight: 3
+				});
+				charPolyLine.setMap(map);
+
+				var charMark = new google.maps.Marker({
 					position: loc,
 					title: name,
 					icon: name + ".png"
 				});
-				marker.setMap(map);
-				var characterInfoWindow = new google.maps.InfoWindow();
-				google.maps.event.addListener(marker, 'click', function() {
-					content = "<p>" + marker.title + "<br>" +
-					"Latitude: " + marker.position["k"] + "<br>" +
-					"Longitude" + marker.position["B"] + "<br>" +
+				charMark.setMap(map);
+
+				var charInfoWindow = new google.maps.InfoWindow();
+				google.maps.event.addListener(charMark, 'click', function() {
+					content = "<p>" + charMark.title + "<br>" +
+					"Latitude: " + charMark.position["k"] + "<br>" +
+					"Longitude" + charMark.position["B"] + "<br>" +
 					"Landmark: " + note + "<br></p>";
 
-					characterInfoWindow.setContent(content);
-					characterInfoWindow.open(map, marker);
+					charInfoWindow.setContent(content);
+					charInfoWindow.open(map, charMark);
 				});
 			}
 

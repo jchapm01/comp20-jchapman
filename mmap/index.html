@@ -12,13 +12,12 @@
 			var coords;
 			var myMark;
 			var username = 'Cadpig';
-			var request;
 			var API = "http://chickenofthesea.herokuapp.com/sendLocation";
 
 			function initialize() {
 				coords = new google.maps.LatLng(lat, lng);
 
-				myOptions = {
+				var myOptions = {
 					center: coords,
 					zoom: 15
 				};
@@ -47,7 +46,7 @@
 	  		// Renders the map with your current position, found from geolocation
 	  		function createMap() {
 	  			//map.setCenter(coords);
-	  			map.panTo(coords)
+	  			map.panTo(coords);
 	  			//Create a marker
 				myMark = new google.maps.Marker({
 					position: coords,
@@ -61,23 +60,23 @@
 	  		}
 
 	  		function sendRequest() {
-	  			request = newXMLHttpRequest();
+	  			var request = new XMLHttpRequest();
 	  			var text = "login=" + username + "&lat=" + lat + "&lng=" + lng;
-	  			request.onreadystatechange = readyState;
+	  			request.onreadystatechange = readyState(request);
 				request.open("POST", API, true);
 				request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 				request.send(text);
 	  		}
 
-	  		function readyState() {
+	  		function readyState(request) {
 					if (request.readyState == 4 && request.status == 200) {
 						var data = JSON.parse(request.responseText);
-						updateMarkers(data); // update all the markers once you have their names and locations
+						updateMarkers(data);
+					}
+					else {
+						alert("assssdf");
 					}
 				}
-
-			function updateMarkers(data) {
-			}
 
 		</script>
 	</head>

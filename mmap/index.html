@@ -77,34 +77,33 @@
 				}
 
 			function updateMarkers(data){
-				CharacterDictionary = {};
+				Characters = {}; //keep a dictionary of Characters just to store name/location pairs (not including students)
 
 				for (key in data) {
-					allPeople = data[key];
+					allPlayers = data[key];
 
 					for (j in allPeople) {
-						player = allPeople[j];
+						player = allPlayers[j];
 
 						if (key == "characters") {
 							var name = player["name"];
-							var playerLat  = player["loc"]["latitude"];
-							var playerLng  = player["loc"]["longitude"];
+							var charLat  = player["loc"]["latitude"];
+							var charLng  = player["loc"]["longitude"];
 							var note = player["loc"]["note"];
-							setCharMarker(name, playerLat, playerLng, note);
-							CharacterDictionary[name] = player["loc"];
+							setCharMarker(name, charLat, charLng, note);
+							Characters[name] = player["loc"];
 						}
 						else {
 							var login = player["login"];
-							var playerLat   = player["lat"];
-							var playerLng   = player["lng"];
+							var studLat   = player["lat"];
+							var studLng   = player["lng"];
 							var time  = player["created_at"];
 							var id    = player["_id"];
-							setStudMarker(login, playerLat, playerLng, time, id);
+							setStudMarker(login, studLat, studLng, time, id);
 						}
 					}
 				}
-				renderDistances();
-			}
+				drawDistances();
 			}
 
 		</script>

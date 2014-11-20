@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Marauder's Map</title>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;libraries=places"></script>
+		<link rel="stylesheet" href="style.css" />
+
+		<script>
+			var map;
+			var myLat = 0;
+			var myLng = 0;
+			me = new google.maps.LatLng(myLat, myLng);
+			var myOptions = {
+				zoom: 13,
+				center: me,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			}
+			var myMarker;
+
+			function init()
+			{
+				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+				getMyLocation();
+			}
+
+			function getMyLocation()
+			{
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						myLat = position.coords.latitude;
+						myLng = position.coords.longitude;
+						renderMap();
+						});
+				}
+				else {
+					alert("Geolocation is not supported by your web browser");
+				}
+			}
+
+			function renderMap()
+			{
+				me = new google.maps.LatLng(myLat, myLng);
+				//update map and go there
+				map.panTo(me);
+				//create a marker
+				myMarker = new google.maps.Marker({
+					position: me,
+					title: "RainbowDash",
+					icon: "rainbowdash.png"
+				});
+				myMarker.setMap(map);
+
+				sendJSONRequest();
+			}
+
+			function sendJSONRequest() {
+				var charRequest = new XMLHttpRequest();
+				var toSend = "login=RainbowDash&lat=" + myLat + "&lng=" + myLng;			
+				charRequest.onreadystatechange = function() {
+					if (charRequest.readyState == 4 && charRequest.status == 200) {
+						pdata = JSON.parse(charRequest.responseText);
+						setAllMarkers();
+					}
+				}
+				charRequest.open("POST", "http://chickenofthesea.herokuapp.com/sendLocation", true);
+				charRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				charRequest.send(toSend);
+			}
+
+			function setAllMarkers() {
+				pdatacopy = pdata;
+				CharacterDictionary = {};
+
+				for (key in pdatacopy) {
+					allPeople = pdata[key];
+
+					for (j in allPeople) {
+						player = allPeople[j];
+
+						if (key == "characters") {
+							var name = player["name"];
+							var lat  = player["loc"]["latitude"];
+							var lng  = player["loc"]["longitude"];
+							var note = player["loc"]["note"];
+							setCharMarker(name, lat, lng, note);
+							CharacterDictionary[name] = player["loc"];
+						}
+						else {
+							var login = player["login"];
+							var lat   = player["lat"];
+							var lng   = player["lng"];
+							var time  = player["created_at"];
+							var id    = player["_id"];
+							setStudMarker(login, lat, lng, time, id);
+						}
+					}
+				}
+				renderDistances();
+			}
+
+			function renderDistances() {
+				getCharStudDistances();
+				var infowindow = new google.maps.InfoWindow();
+				google.maps.event.addListener(myMarker, 'click', function() {
+					content = "<p>" + myMarker.title + "Lat: " + myMarker.position["k"] +
+					"<br>" + "Lng: " + myMarker.position["B"] + "<br>";
+					for (i in sortedDistances) {
+						content += myMarker.title + " is " + sortedDistances[i][1] +
+						" miles away from " + sortedDistances[i][0] + "<br>";
+					}
+					content += "</p>";
+					infowindow.setContent(content);
+					infowindow.open(map, myMarker);
+				});
+			}
+
+			function getCharStudDistances() {
+				distanceDictionary = {};
+				sortedDistances = [];
+
+				for(name in CharacterDictionary) {
+					characterLat = CharacterDictionary[name]["latitude"];
+					characterLng = CharacterDictionary[name]["longitude"];
+					distanceDictionary[name] = setDistances();
+					sortedDistances.push([name, distanceDictionary[name]]);
+				}
+				sortedDistances.sort(function(t1, t2) {return t1[1] - t2[1]});
+			}
+
+			function setDistances() {
+				var eRad = 3963.167;
+				Number.prototype.toRad = function() {
+					return this * Math.PI / 180;
+				}
+
+				var t1 = myLat.toRad();
+				var t2 = characterLat.toRad();
+				var t3 = myLng.toRad();
+				var t4 = characterLng.toRad();
+
+				var t5 = Math.sin(t3/2) * Math.sin(t3/2) + Math.cos(t1) *
+					Math.cos(t2) * Math.sin(t4/2) * Math.sin(t4/2);
+				var t6 = 2 * Math.atan(Math.sqrt(t5), Math.sqrt(1-t5));
+				var t7 = eRad * t6;
+				return t7;
+			}
+
+
+			function setCharMarker(name, lat, lng, note) {
+				var loc = new google.maps.LatLng(lat, lng);
+				var characterLine = new google.maps.Polyline({
+					path: [me, loc],
+					strokeColor: "000000",
+					strokeWeight: 8
+				});
+				characterLine.setMap(map);
+
+				var marker = new google.maps.Marker({
+					position: loc,
+					title: name,
+					icon: name + ".png"
+				});
+				marker.setMap(map);
+				var characterInfoWindow = new google.maps.InfoWindow();
+				google.maps.event.addListener(marker, 'click', function() {
+					content = "<p>" + marker.title + "<br>" +
+					"Latitude: " + marker.position["k"] + "<br>" +
+					"Longitude" + marker.position["B"] + "<br>" +
+					"Landmark: " + note + "<br></p>";
+
+					characterInfoWindow.setContent(content);
+					characterInfoWindow.open(map, marker);
+				});
+			}
+
+			function setStudMarker(login, lat, lng, time, id) {
+				var loc = new google.maps.LatLng(lat, lng);
+				var marker = new google.maps.Marker({
+					position: loc,
+					title: login
+				});
+				marker.setMap(map);
+
+				var studentInfoWindow = new google.maps.InfoWindow();
+				google.maps.event.addListener(marker, 'click', function() {
+					content = "<p>" + marker.title + "<br>" +
+					"Latitude: " + marker.position["k"] + "<br>" +
+					"Longitude: " + marker.position["B"] + "<br>" +
+					"Posted at: " + time + "<br>" + "ID: " + id + "<br></p>";
+					studentInfoWindow.setContent(content);
+					studentInfoWindow.open(map, marker);
+				});
+			}
+
+		</script>
+	</head>
+
+	<body onload="init()">
+		<div id="map_canvas"></div>
+	</body>
+	
+	</html>

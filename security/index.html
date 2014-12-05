@@ -64,7 +64,7 @@
 			<p><h4>Location:</h4></p>
 				<ul>N/A; The app does not use any means of authenticating the user within the source code before they have access to any of the APIs, or authenticate any specific API.</ul>
 			<p><h4>Severity of Issue:</h4></p>
-				<ul>This is a High level issue, because without authentication, anyone with access to the URL can therefore accessany APIs, leaving the documents, database, and server requests vulnerable to any user - some users may have malicious intent. It is a completely open field to potentially steal account information from other users, as all other users' information is held within a secure account.</ul>
+				<ul>This is a High level issue, because without authentication, anyone with access to the URL can therefore access any APIs, leaving the documents, database, and server requests vulnerable to any user - some users may have malicious intent. It is a completely open field to potentially steal account information from other users, as all other users' information is held within a secure account.</ul>
 			<p><h4>Description of Issue:</h4></p>
 				<ul>Accessing any of the APIs (/locations.json, /redline.json, /sendLocation) is doable by anyone - there is no barrier to entry to the APIs. Also, submitting any data or queries via the APIs is not authenticated either, so any data/queries are passed through to be handled by the app.</ul>
 			<p><h4>Proof of Vulnerability:</h4></p> 
@@ -74,7 +74,7 @@
 			</ol>
 	</ol>
 	<h2>Conclusion</h2>
-	<p>Though the application's known bugs in the POST method made it difficult to truly test the XSS attempts, the source code proved that these attempts would be possible even without the bugs. It is hard to have a security issues that are not of High severity, as it goes as a rule that source code should prevent any and all types of outside infiltration (we see this even in lower-level computer science courses, where implementation and interface (header) files are kept separate to uphold the abstraction barrier). For the future, when programming a web applcation, at the least the most basic security issues (XSS, authentication) should be accounted for during the initial design phase to ensure that the code will be compliant and run as expected, while also preventing security hacks, when it is up and running.</p>
+	<p>Though the application's known bugs in the POST method made it difficult to truly test the XSS attempts, the source code proved that these attempts would be possible even without the bugs. It is hard to have security issues that are not of High severity, as it goes as a rule that source code should prevent any and all types of outside infiltration (we see this even in lower-level computer science courses, where implementation and interface (header) files are kept separate to uphold the abstraction barrier). For the future, when programming a web applcation, at the least the most basic security issues (XSS, authentication) should be accounted for during the initial design phase to ensure that the code will be compliant and run as expected, while also preventing security hacks, when it is up and running.</p>
 
 </body>
 </html>

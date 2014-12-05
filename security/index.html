@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+	<h1>Security Assessment: performed by Jessie Chapman</h1>
+
+	<h2>Introduction</h2>
+	<p>I was tasked with examining Adam Zakaria's web application that uses multiple APIs to store and report user data (login, location as latitude and longitude, and date logged in), as well as report the status of the Boston T's Red Line trains.</p>
+
+	<h2>Methodology</h2>
+	<p>In order to test this application, I first did "black box" testing by using Burp Suite and by attempting to access things without in-depth knowledge of the types of data limited by the APIs, and secondly by doing a code review of the application's source code to identify any security measure tht is explicitly not accounted for.<br></br></p>
+
+	<h2>Abstract of Findings</h2>
+	<p>Testing this application showed that 2 cross-site scripting attacks (one client side, one database side) can occur, undefined routes are not handled, and that the application requires no authentication of user or user type in order to access any of the APIs.</p>
+
+	<h2>Issues Found</h2>
+	<ol>
+		<li><h3>Doesn't validate input: XSS to inject HTML or scripts to be seen on client side</h3></li>
+			<ol>
+			<p><h4>Location:</h4></p>
+				<ul>In server.js, the POST method - lines 26-32 (app.post('/sendLocation'), specifically line 27 where the body of the request is accessed.</ul>
+			<p><h4>Severity of Issue:</h4></p>
+				<ul>Though XSS in general is a High level issue as not validating input can lead to cross-site scripting, this specifically is a Medium level issue as only the client side is affected and the true database is left untouched. Either static images/text can be inserted into the document, scripts can be inserted from the client-side to run JavaScript code, or the page can be forced to redirect. This breaches the application's abstraction barrier, allowing the client side to essentially modify the source code dynamically.</ul>
+			<p><h4>Description of Issue:</h4></p>
+				<ul>This issue was attempted by using curl to send data to the POST method, i.e. curl --data "login=&lt;iframe src='http://www.verygoodwork.com/wp-content/uploads/2014/10/rick1.jpg'&gt;&lt;/iframe&gt;" http://pacific-oasis7327.herokuapp.com/sendLocation , but "ReferenceError: request is not defined" was received as it is an known bug in the code. Either way, looking through the source code, since there is no input validation in the code itself, this XSS attack would have been successful.</ul>
+			<p><h4>Proof of Vulnerability:</h4></p> 
+				<ul><br><img src="XSS - curl.png"></br></ul>
+			<p><h4>Resolution:</h4></p>
+				<ul>Check for angle bracks, single/double quotes, semi-colons, etc in the code when receiving data input, or encode the query so it won't accept things other than proper data.</ul>
+			</ol>
+
+
+		<li><h3>Doesn't validate input: XSS to inject fields into the database</h3></li>
+			<ol>
+			<p><h4>Location:</h4></p>
+				<ul>In server.js, the POST method - lines 26-32 (app.post('/sendLocation'), specifically line 35 collection.insert() and line 27 when getting the body of the request.</ul>
+			<p><h4>Severity of Issue:</h4></p>
+				<ul>This is a High level issue just as above, as any cross-site scripting has the potential to alter both the client-side and database-side of an application. Because the database can be altered, this is a slightly larger problem because the heart of the application can be modified, which in turn can affect client-side reporting of data as well.</ul>
+			<p><h4>Description of Issue:</h4></p>
+				<ul>This issue was attempted by using curl to send data to the POST method, i.e. curl --data "login=jchapm01&lat=2&lng=3&PARAM=uhoh" http://pacific-oasis7327.herokuapp.com/sendLocation , but again the "ReferenceError: request is not defined" as a known error was received. However, on line 35, collection.insert() only inserts data variable-by-variable (collection.insert({"login" : login, "lat" : lat,  ...), instead of having a predfined object, and therefore if all fields are accounted for, "uhoh" as another parameter could have been inserted into the database as well.</ul>
+			<p><h4>Proof of Vulnerability:</h4></p> 
+				<ul><br><img src="XSS - curl 2.png"></br></ul>
+			<p><h4>Resolution:</h4></p>
+				<ul>To prevent injecting foreign fields into the database, an object to be inserted in the database (with all required fields) can be created instead of inserting each individual data piece as a variable on its own, which leaves open the possibility of forgeing data.</ul>
+			</ol>
+
+		<li><h3>Not all routes defined</h3></li>
+			<ol>
+			<p><h4>Location:</h4></p>
+				<ul>N/A; The app's source code does not handle the possibility of a user attempting to access a route via the URL that has not been explicitly defined.</ul>
+			<p><h4>Severity of Issue:</h4></p>
+				<ul>This is a Low level issue, as the repercussions of not defining a route don't leave the app vulnerable to attacks or leave the database vulnerable to be modified.</ul>
+			<p><h4>Description of Issue:</h4></p>
+				<ul>Upong requesting a path that is not defined (ex. https://pacific-oasis-7327.herokuapp.com/notdefined), the page produces "Cannot GET /notdefined".</ul>
+			<p><h4>Proof of Vulnerability:</h4></p> 
+				<ul><br><img src="undefined route.png"></br></ul>
+			<p><h4>Resolution:</h4></p>
+				<ul>To handle undefined routes, another app.get() function must be created: app.get('*', function(response, request) {});<br>This would take in all routes - if the route is not already defined somewhere else, then send a 404 error.</br></ul>
+			</ol>
+
+		<li><h3>Does not use Authentication</h3></li>
+			<ol>
+			<p><h4>Location:</h4></p>
+				<ul>N/A; The app does not use any means of authenticating the user within the source code before they have access to any of the APIs, or authenticate any specific API.</ul>
+			<p><h4>Severity of Issue:</h4></p>
+				<ul>This is a High level issue, because without authentication, anyone with access to the URL can therefore accessany APIs, leaving the documents, database, and server requests vulnerable to any user - some users may have malicious intent. It is a completely open field to potentially steal account information from other users, as all other users' information is held within a secure account.</ul>
+			<p><h4>Description of Issue:</h4></p>
+				<ul>Accessing any of the APIs (/locations.json, /redline.json, /sendLocation) is doable by anyone - there is no barrier to entry to the APIs. Also, submitting any data or queries via the APIs is not authenticated either, so any data/queries are passed through to be handled by the app.</ul>
+			<p><h4>Proof of Vulnerability:</h4></p> 
+				<ul>By running any of the three above mentioned APIs, I was able to access them without the need to go through a third-party authentication or wihout the need to create/log in to an account before accessing the application's interface.<br>As you can see, I was able to access the root directory with no type of authentication: <br><img src="no auth.png"></br></br></ul>
+			<p><h4>Resolution:</h4></p>
+				<ul>To enable authentication for an app, there are multiple ways of implementing third-party authentication code (i.e. via Facebook O-Auth or Twitter). This is usually a series of a handful of lines of code and configuration of your app with the third-party. Another less open method is to create accounts that must be logged in with usernames/passwords that are pre-authenticated - only these accounts have access to any of the APIs.</ul>
+			</ol>
+	</ol>
+	<h2>Conclusion</h2>
+	<p>Though the application's known bugs in the POST method made it difficult to truly test the XSS attempts, the source code proved that these attempts would be possible even without the bugs. It is hard to have a security issues that are not of High severity, as it goes as a rule that source code should prevent any and all types of outside infiltration (we see this even in lower-level computer science courses, where implementation and interface (header) files are kept separate to uphold the abstraction barrier). For the future, when programming a web applcation, at the least the most basic security issues (XSS, authentication) should be accounted for during the initial design phase to ensure that the code will be compliant and run as expected, while also preventing security hacks, when it is up and running.</p>
+
+</body>
+</html>

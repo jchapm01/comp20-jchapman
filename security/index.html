@@ -9,7 +9,7 @@
 	<p>I was tasked with examining Adam Zakaria's web application that uses multiple APIs to store and report user data (login, location as latitude and longitude, and date logged in), as well as report the status of the Boston T's Red Line trains.</p>
 
 	<h2>Methodology</h2>
-	<p>In order to test this application, I first did "black box" testing by using Burp Suite and by attempting to access things without in-depth knowledge of the types of data limited by the APIs, and secondly by doing a code review of the application's source code to identify any security measure tht is explicitly not accounted for.<br></br></p>
+	<p>In order to test this application, I first did "black box" testing by using curl and by attempting to access things without in-depth knowledge of the types of data limited by the APIs, and secondly by doing a code review of the application's source code to identify any security measure tht is explicitly not accounted for.<br></br></p>
 
 	<h2>Abstract of Findings</h2>
 	<p>Testing this application showed that 2 cross-site scripting attacks (one client side, one database side) can occur, undefined routes are not handled, and that the application requires no authentication of user or user type in order to access any of the APIs.</p>
